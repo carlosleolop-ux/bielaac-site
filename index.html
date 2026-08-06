@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biel AAC — Comunicação Aumentativa e Alternativa</title>
+  <meta name="description" content="App de Comunicação Aumentativa e Alternativa para pessoas com necessidades especiais de comunicação. Para autismo, paralisia cerebral, apraxia e muito mais.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --red: #CC0000; --black: #0F0F0F; --dark: #1A1A1A; --darker: #141414;
+      --card: #1E1E1E; --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF; --text-muted: rgba(255,255,255,0.6); --text-dim: rgba(255,255,255,0.35);
+      --green: #2E7D32; --blue: #0277BD;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--text); font-family: var(--font); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,15,15,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo img { height: 36px; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-link { font-size: 14px; color: var(--text-muted); transition: color .2s; }
+    .nav-link:hover { color: var(--text); }
+    .nav-btn {
+      background: var(--red); color: white; padding: 9px 20px;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      transition: opacity .2s;
+    }
+    .nav-btn:hover { opacity: .85; }
+    .lang-nav { display: flex; gap: 4px; }
+    .lang-nav button {
+      background: transparent; border: 1px solid var(--border); border-radius: 5px;
+      color: var(--text-dim); font-size: 11px; font-weight: 700; padding: 4px 8px;
+      cursor: pointer; transition: all .15s; letter-spacing: .5px;
+    }
+    .lang-nav button:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
+    .lang-nav button.active { background: rgba(204,0,0,.2); border-color: var(--red); color: white; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 100px 48px 80px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(204,0,0,0.12) 0%, transparent 70%);
+      text-align: center;
+    }
+    .hero-inner { max-width: 760px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(204,0,0,0.12); border: 1px solid rgba(204,0,0,0.3);
+      border-radius: 20px; padding: 6px 16px; margin-bottom: 32px;
+      font-size: 13px; color: #ff6666;
+    }
+    .hero-logo { height: 80px; margin-bottom: 32px; }
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.1;
+      margin-bottom: 20px; letter-spacing: -1px;
+    }
+    .hero-title span { color: var(--red); }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); color: var(--text-muted);
+      max-width: 580px; margin: 0 auto 40px; line-height: 1.6;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-hero-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--red); color: white; padding: 16px 32px;
+      border-radius: 12px; font-size: 16px; font-weight: 700;
+      transition: all .2s; box-shadow: 0 4px 24px rgba(204,0,0,0.3);
+    }
+    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(204,0,0,0.4); }
+    .btn-hero-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--text); padding: 16px 32px;
+      border-radius: 12px; font-size: 16px; font-weight: 600;
+      border: 1px solid var(--border); transition: all .2s;
+    }
+    .btn-hero-secondary:hover { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.2); }
+    .hero-note { margin-top: 24px; font-size: 13px; color: var(--text-dim); }
+
+    /* ─── SECTION ─── */
+    section { padding: 96px 48px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--red); margin-bottom: 12px;
+    }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 16px; letter-spacing: -.5px; }
+    .section-sub { font-size: 17px; color: var(--text-muted); max-width: 600px; line-height: 1.6; margin-bottom: 56px; }
+
+    /* ─── WHO ─── */
+    .who { background: var(--darker); }
+    .who-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .who-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px 20px; text-align: center; transition: border-color .2s;
+    }
+    .who-card:hover { border-color: rgba(204,0,0,0.4); }
+    .who-icon { font-size: 36px; margin-bottom: 12px; }
+    .who-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .who-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ─── FEATURES ─── */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 28px; transition: all .2s;
+    }
+    .feature-card:hover { border-color: rgba(204,0,0,0.3); transform: translateY(-2px); }
+    .feature-icon { font-size: 28px; margin-bottom: 14px; }
+    .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ─── PLANS ─── */
+    .plans { background: var(--darker); }
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .plan-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px; position: relative; transition: all .2s;
+    }
+    .plan-card:hover { transform: translateY(-3px); }
+    .plan-card.featured { border-color: var(--red); box-shadow: 0 0 0 1px var(--red), 0 8px 32px rgba(204,0,0,0.2); }
+    .plan-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--red); color: white; font-size: 11px; font-weight: 700;
+      padding: 4px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .plan-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+    .plan-price { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+    .plan-period { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .plan-features { list-style: none; margin-bottom: 28px; }
+    .plan-features li { font-size: 13px; color: var(--text-muted); padding: 6px 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li span.check { color: #4CAF50; font-size: 15px; }
+    .plan-features li span.x { color: var(--text-dim); font-size: 15px; }
+    .plan-btn {
+      display: block; text-align: center; padding: 13px;
+      border-radius: 10px; font-size: 14px; font-weight: 700;
+      transition: all .2s; border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .plan-btn.primary { background: var(--red); color: white; border-color: var(--red); }
+    .plan-btn:hover { opacity: .85; }
+
+    /* ─── PANEL CTA ─── */
+    .panel-cta {
+      background: linear-gradient(135deg, rgba(204,0,0,0.15) 0%, rgba(2,119,189,0.15) 100%);
+      border: 1px solid rgba(204,0,0,0.2); border-radius: 20px;
+      padding: 56px; text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .panel-cta-icon { font-size: 48px; margin-bottom: 20px; }
+    .panel-cta-title { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+    .panel-cta-sub { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; }
+    .panel-cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--blue); color: white; padding: 15px 32px;
+      border-radius: 12px; font-size: 16px; font-weight: 700;
+      transition: all .2s; box-shadow: 0 4px 20px rgba(2,119,189,0.3);
+    }
+    .panel-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(2,119,189,0.4); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--darker); border-top: 1px solid var(--border);
+      padding: 48px; text-align: center;
+    }
+    .footer-logo { height: 32px; margin-bottom: 20px; opacity: .7; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .footer-link { font-size: 13px; color: var(--text-dim); transition: color .2s; }
+    .footer-link:hover { color: var(--text-muted); }
+    .footer-copy { font-size: 12px; color: var(--text-dim); }
+
+    /* ─── SCREENSHOTS ─── */
+    .screenshots { background: var(--darker); }
+    .screenshots-placeholder {
+      background: var(--card); border: 2px dashed var(--border); border-radius: 16px;
+      padding: 60px; text-align: center; color: var(--text-dim);
+    }
+    .screenshots-placeholder-icon { font-size: 48px; margin-bottom: 16px; }
+    .screenshots-placeholder-text { font-size: 16px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      .nav-link { display: none; }
+      section { padding: 64px 20px; }
+      .hero { padding: 100px 20px 64px; }
+      .panel-cta { padding: 36px 24px; }
+      footer { padding: 36px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="logo_branca.png" alt="Biel AAC" onerror="this.style.display='none'">
+  </a>
+  <div class="nav-links">
+    <a href="#features" class="nav-link" data-i18n="navFeatures">Funcionalidades</a>
+    <a href="#plans" class="nav-link" data-i18n="navPlans">Planos</a>
+    <a href="#panel" class="nav-link" data-i18n="navPanel">Painel Web</a>
+    <div class="lang-nav">
+      <button onclick="setLang('pt')" class="active" id="btn-pt">PT</button>
+      <button onclick="setLang('en')" id="btn-en">EN</button>
+      <button onclick="setLang('es')" id="btn-es">ES</button>
+      <button onclick="setLang('fr')" id="btn-fr">FR</button>
+    </div>
+    <a href="https://panel.bielaac.com" class="nav-btn" data-i18n="navAccess">Acessar Painel</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span>🗣️</span>
+      <span data-i18n="heroBadge">Comunicação Aumentativa e Alternativa</span>
+    </div>
+    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'">
+    <h1 class="hero-title" data-i18n="heroTitle">A voz de quem<br><span>precisa ser ouvido</span></h1>
+    <p class="hero-sub" data-i18n="heroSub">O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-hero-primary">
+        <span>▶</span>
+        <span data-i18n="heroDownload">Baixar no Google Play</span>
+      </a>
+      <a href="https://panel.bielaac.com" class="btn-hero-secondary">
+        <span>⚙️</span>
+        <span data-i18n="heroPanel">Acessar Painel Web</span>
+      </a>
+    </div>
+    <p class="hero-note" data-i18n="heroNote">Disponível para Android · iOS em breve · Gratuito para experimentar</p>
+  </div>
+</section>
+
+<!-- PARA QUEM -->
+<section class="who" id="who">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="whoLabel">Para quem é</div>
+    <h2 class="section-title" data-i18n="whoTitle">Comunicação para todos</h2>
+    <p class="section-sub" data-i18n="whoSub">O Biel AAC foi desenvolvido para apoiar pessoas com diversas necessidades especiais de comunicação.</p>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-icon">🧩</div>
+        <div class="who-name" data-i18n="who1Name">Autismo (TEA)</div>
+        <div class="who-desc" data-i18n="who1Desc">Suporte à comunicação para pessoas no espectro autista</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">🧠</div>
+        <div class="who-name" data-i18n="who2Name">Paralisia Cerebral</div>
+        <div class="who-desc" data-i18n="who2Desc">Interface adaptada para diferentes capacidades motoras</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">🗣️</div>
+        <div class="who-name" data-i18n="who3Name">Apraxia de Fala</div>
+        <div class="who-desc" data-i18n="who3Desc">Alternativa eficaz para dificuldades na produção de fala</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">💬</div>
+        <div class="who-name" data-i18n="who4Name">Afasia</div>
+        <div class="who-desc" data-i18n="who4Desc">Apoio à comunicação após AVC ou lesão cerebral</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">👨‍⚕️</div>
+        <div class="who-name" data-i18n="who5Name">Terapeutas</div>
+        <div class="who-desc" data-i18n="who5Desc">Ferramenta profissional para fonoaudiólogos e terapeutas ocupacionais</div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">👨‍👩‍👧</div>
+        <div class="who-name" data-i18n="who6Name">Famílias</div>
+        <div class="who-desc" data-i18n="who6Desc">Fácil de configurar e usar no dia a dia em casa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUNCIONALIDADES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="featLabel">Funcionalidades</div>
+    <h2 class="section-title" data-i18n="featTitle">Tudo que você precisa</h2>
+    <p class="section-sub" data-i18n="featSub">Recursos poderosos em uma interface simples e intuitiva.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🃏</div>
+        <div class="feature-title" data-i18n="feat1Title">Cards personalizáveis</div>
+        <div class="feature-desc" data-i18n="feat1Desc">Crie cards com ícones, fotos da câmera ou galeria, cores e vocalizações personalizadas.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📂</div>
+        <div class="feature-title" data-i18n="feat2Title">Seções e subseções</div>
+        <div class="feature-desc" data-i18n="feat2Desc">Organize o vocabulário em categorias e subcategorias para navegação rápida e intuitiva.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔊</div>
+        <div class="feature-title" data-i18n="feat3Title">Voz sintética (TTS)</div>
+        <div class="feature-desc" data-i18n="feat3Desc">Vocalização em português, inglês, espanhol e francês. Funciona completamente offline.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☁️</div>
+        <div class="feature-title" data-i18n="feat4Title">Sincronização na nuvem</div>
+        <div class="feature-desc" data-i18n="feat4Desc">Configure no computador e use no tablet. Alterações sincronizadas automaticamente.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title" data-i18n="feat5Title">Painel web</div>
+        <div class="feature-desc" data-i18n="feat5Desc">Configure seções e cards pelo navegador do computador. Mais fácil e rápido para terapeutas.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📵</div>
+        <div class="feature-title" data-i18n="feat6Title">Funciona offline</div>
+        <div class="feature-desc" data-i18n="feat6Desc">A comunicação não pode depender da internet. O Biel AAC funciona sem conexão.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title" data-i18n="feat7Title">Modo protegido por PIN</div>
+        <div class="feature-desc" data-i18n="feat7Desc">Proteja as configurações com PIN para que o usuário não altere acidentalmente.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title" data-i18n="feat8Title">Busca rápida</div>
+        <div class="feature-desc" data-i18n="feat8Desc">Encontre qualquer palavra ou frase instantaneamente com a busca integrada.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title" data-i18n="feat9Title">4 idiomas</div>
+        <div class="feature-desc" data-i18n="feat9Desc">Interface disponível em português, inglês, espanhol e francês.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots" id="screenshots">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="screensLabel">Screenshots</div>
+    <h2 class="section-title" data-i18n="screensTitle">Veja o app em ação</h2>
+    <div class="screenshots-placeholder">
+      <div class="screenshots-placeholder-icon">📱</div>
+      <div class="screenshots-placeholder-text" data-i18n="screensPlaceholder">Screenshots em breve</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section class="plans" id="plans">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="plansLabel">Planos</div>
+    <h2 class="section-title" data-i18n="plansTitle">Simples e transparente</h2>
+    <p class="section-sub" data-i18n="plansSub">Comece gratuitamente e faça upgrade quando precisar.</p>
+    <div class="plans-grid">
+      <!-- Gratuito -->
+      <div class="plan-card">
+        <div class="plan-name" data-i18n="plan1Name">Gratuito</div>
+        <div class="plan-price" data-i18n="plan1Price">R$ 0</div>
+        <div class="plan-period" data-i18n="plan1Period">para sempre</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> <span data-i18n="plan1f1">3 seções</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan1f2">5 cards por seção</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan1f3">1 dispositivo</span></li>
+          <li><span class="x">✗</span> <span data-i18n="plan1f4">Sem sincronização</span></li>
+          <li><span class="x">✗</span> <span data-i18n="plan1f5">Sem painel web</span></li>
+        </ul>
+        <a href="#" class="plan-btn" data-i18n="planBtnDownload">Baixar grátis</a>
+      </div>
+      <!-- Essencial -->
+      <div class="plan-card featured">
+        <div class="plan-badge" data-i18n="planPopular">Mais popular</div>
+        <div class="plan-name" data-i18n="plan2Name">Essencial</div>
+        <div class="plan-price" data-i18n="plan2Price">R$ 29</div>
+        <div class="plan-period" data-i18n="plan2Period">/mês</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> <span data-i18n="plan2f1">Seções ilimitadas</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan2f2">Cards ilimitados</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan2f3">Sync em 2 dispositivos</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan2f4">Painel web</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan2f5">Suporte por email</span></li>
+        </ul>
+        <a href="#" class="plan-btn primary" data-i18n="planBtnSubscribe">Assinar agora</a>
+      </div>
+      <!-- Clínica -->
+      <div class="plan-card">
+        <div class="plan-name" data-i18n="plan3Name">Clínica</div>
+        <div class="plan-price" data-i18n="plan3Price">R$ 79</div>
+        <div class="plan-period" data-i18n="plan3Period">/mês</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> <span data-i18n="plan3f1">Tudo do Essencial</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan3f2">Sync em 5 dispositivos</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan3f3">Múltiplos perfis</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan3f4">Relatórios de uso</span></li>
+          <li><span class="check">✓</span> <span data-i18n="plan3f5">Suporte prioritário</span></li>
+        </ul>
+        <a href="#" class="plan-btn" data-i18n="planBtnSubscribe2">Assinar agora</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAINEL WEB CTA -->
+<section id="panel">
+  <div class="section-inner">
+    <div class="panel-cta">
+      <div class="panel-cta-icon">🖥️</div>
+      <h2 class="panel-cta-title" data-i18n="panelCtaTitle">Configure pelo computador</h2>
+      <p class="panel-cta-sub" data-i18n="panelCtaSub">Use o Painel Web para criar e editar seções e cards diretamente pelo navegador. Mais fácil e rápido para terapeutas e pais que precisam configurar o app para seus pacientes e filhos.</p>
+      <a href="https://panel.bielaac.com" class="panel-cta-btn">
+        <span>⚙️</span>
+        <span data-i18n="panelCtaBtn">Acessar o Painel Web</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo_branca.png" alt="Biel AAC" class="footer-logo" onerror="this.style.display='none'">
+  <div class="footer-links">
+    <a href="https://privacy.bielaac.com" class="footer-link" data-i18n="footerPrivacy">Política de Privacidade</a>
+    <a href="https://panel.bielaac.com" class="footer-link" data-i18n="footerPanel">Painel Web</a>
+    <a href="mailto:privacy@bielaac.com" class="footer-link" data-i18n="footerContact">Contato</a>
+  </div>
+  <p class="footer-copy">© 2026 LawPiss Digital · Biel AAC</p>
+</footer>
+
+<script>
+// ─── INTERNACIONALIZAÇÃO ─────────────────────────────────────
+const STRINGS = {
+  pt: {
+    navFeatures: 'Funcionalidades', navPlans: 'Planos', navPanel: 'Painel Web', navAccess: 'Acessar Painel',
+    heroBadge: 'Comunicação Aumentativa e Alternativa',
+    heroTitle: 'A voz de quem<br><span>precisa ser ouvido</span>',
+    heroSub: 'O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.',
+    heroDownload: 'Baixar no Google Play', heroPanel: 'Acessar Painel Web',
+    heroNote: 'Disponível para Android · iOS em breve · Gratuito para experimentar',
+    whoLabel: 'Para quem é', whoTitle: 'Comunicação para todos',
+    whoSub: 'O Biel AAC foi desenvolvido para apoiar pessoas com diversas necessidades especiais de comunicação.',
+    who1Name: 'Autismo (TEA)', who1Desc: 'Suporte à comunicação para pessoas no espectro autista',
+    who2Name: 'Paralisia Cerebral', who2Desc: 'Interface adaptada para diferentes capacidades motoras',
+    who3Name: 'Apraxia de Fala', who3Desc: 'Alternativa eficaz para dificuldades na produção de fala',
+    who4Name: 'Afasia', who4Desc: 'Apoio à comunicação após AVC ou lesão cerebral',
+    who5Name: 'Terapeutas', who5Desc: 'Ferramenta profissional para fonoaudiólogos e terapeutas ocupacionais',
+    who6Name: 'Famílias', who6Desc: 'Fácil de configurar e usar no dia a dia em casa',
+    featLabel: 'Funcionalidades', featTitle: 'Tudo que você precisa',
+    featSub: 'Recursos poderosos em uma interface simples e intuitiva.',
+    feat1Title: 'Cards personalizáveis', feat1Desc: 'Crie cards com ícones, fotos da câmera ou galeria, cores e vocalizações personalizadas.',
+    feat2Title: 'Seções e subseções', feat2Desc: 'Organize o vocabulário em categorias e subcategorias para navegação rápida e intuitiva.',
+    feat3Title: 'Voz sintética (TTS)', feat3Desc: 'Vocalização em português, inglês, espanhol e francês. Funciona completamente offline.',
+    feat4Title: 'Sincronização na nuvem', feat4Desc: 'Configure no computador e use no tablet. Alterações sincronizadas automaticamente.',
+    feat5Title: 'Painel web', feat5Desc: 'Configure seções e cards pelo navegador do computador. Mais fácil e rápido para terapeutas.',
+    feat6Title: 'Funciona offline', feat6Desc: 'A comunicação não pode depender da internet. O Biel AAC funciona sem conexão.',
+    feat7Title: 'Modo protegido por PIN', feat7Desc: 'Proteja as configurações com PIN para que o usuário não altere acidentalmente.',
+    feat8Title: 'Busca rápida', feat8Desc: 'Encontre qualquer palavra ou frase instantaneamente com a busca integrada.',
+    feat9Title: '4 idiomas', feat9Desc: 'Interface disponível em português, inglês, espanhol e francês.',
+    screensLabel: 'Screenshots', screensTitle: 'Veja o app em ação', screensPlaceholder: 'Screenshots em breve',
+    plansLabel: 'Planos', plansTitle: 'Simples e transparente', plansSub: 'Comece gratuitamente e faça upgrade quando precisar.',
+    plan1Name: 'Gratuito', plan1Price: 'R$ 0', plan1Period: 'para sempre',
+    plan1f1: '3 seções', plan1f2: '5 cards por seção', plan1f3: '1 dispositivo', plan1f4: 'Sem sincronização', plan1f5: 'Sem painel web',
+    plan2Name: 'Essencial', plan2Price: 'R$ 29', plan2Period: '/mês',
+    plan2f1: 'Seções ilimitadas', plan2f2: 'Cards ilimitados', plan2f3: 'Sync em 2 dispositivos', plan2f4: 'Painel web', plan2f5: 'Suporte por email',
+    plan3Name: 'Clínica', plan3Price: 'R$ 79', plan3Period: '/mês',
+    plan3f1: 'Tudo do Essencial', plan3f2: 'Sync em 5 dispositivos', plan3f3: 'Múltiplos perfis', plan3f4: 'Relatórios de uso', plan3f5: 'Suporte prioritário',
+    planPopular: 'Mais popular', planBtnDownload: 'Baixar grátis', planBtnSubscribe: 'Assinar agora', planBtnSubscribe2: 'Assinar agora',
+    panelCtaTitle: 'Configure pelo computador',
+    panelCtaSub: 'Use o Painel Web para criar e editar seções e cards diretamente pelo navegador. Mais fácil e rápido para terapeutas e pais.',
+    panelCtaBtn: 'Acessar o Painel Web',
+    footerPrivacy: 'Política de Privacidade', footerPanel: 'Painel Web', footerContact: 'Contato',
+  },
+  en: {
+    navFeatures: 'Features', navPlans: 'Plans', navPanel: 'Web Panel', navAccess: 'Access Panel',
+    heroBadge: 'Augmentative and Alternative Communication',
+    heroTitle: 'The voice of those who<br><span>need to be heard</span>',
+    heroSub: 'Biel AAC is an augmentative and alternative communication app for people with autism, cerebral palsy, apraxia, and other special communication needs.',
+    heroDownload: 'Download on Google Play', heroPanel: 'Access Web Panel',
+    heroNote: 'Available for Android · iOS coming soon · Free to try',
+    whoLabel: 'Who is it for', whoTitle: 'Communication for everyone',
+    whoSub: 'Biel AAC was designed to support people with various special communication needs.',
+    who1Name: 'Autism (ASD)', who1Desc: 'Communication support for people on the autism spectrum',
+    who2Name: 'Cerebral Palsy', who2Desc: 'Adapted interface for different motor abilities',
+    who3Name: 'Apraxia of Speech', who3Desc: 'Effective alternative for speech production difficulties',
+    who4Name: 'Aphasia', who4Desc: 'Communication support after stroke or brain injury',
+    who5Name: 'Therapists', who5Desc: 'Professional tool for speech therapists and occupational therapists',
+    who6Name: 'Families', who6Desc: 'Easy to set up and use in everyday life at home',
+    featLabel: 'Features', featTitle: 'Everything you need',
+    featSub: 'Powerful features in a simple and intuitive interface.',
+    feat1Title: 'Customizable cards', feat1Desc: 'Create cards with icons, photos from camera or gallery, colors and custom vocalizations.',
+    feat2Title: 'Sections and subsections', feat2Desc: 'Organize vocabulary into categories and subcategories for quick and intuitive navigation.',
+    feat3Title: 'Text-to-Speech (TTS)', feat3Desc: 'Vocalization in Portuguese, English, Spanish and French. Works completely offline.',
+    feat4Title: 'Cloud synchronization', feat4Desc: 'Configure on the computer and use on the tablet. Changes synchronized automatically.',
+    feat5Title: 'Web panel', feat5Desc: 'Configure sections and cards through your computer browser. Faster and easier for therapists.',
+    feat6Title: 'Works offline', feat6Desc: 'Communication cannot depend on internet. Biel AAC works without a connection.',
+    feat7Title: 'PIN protected mode', feat7Desc: 'Protect settings with a PIN so users cannot accidentally change them.',
+    feat8Title: 'Quick search', feat8Desc: 'Find any word or phrase instantly with the integrated search.',
+    feat9Title: '4 languages', feat9Desc: 'Interface available in Portuguese, English, Spanish and French.',
+    screensLabel: 'Screenshots', screensTitle: 'See the app in action', screensPlaceholder: 'Screenshots coming soon',
+    plansLabel: 'Plans', plansTitle: 'Simple and transparent', plansSub: 'Start for free and upgrade when you need.',
+    plan1Name: 'Free', plan1Price: 'R$ 0', plan1Period: 'forever',
+    plan1f1: '3 sections', plan1f2: '5 cards per section', plan1f3: '1 device', plan1f4: 'No sync', plan1f5: 'No web panel',
+    plan2Name: 'Essential', plan2Price: 'R$ 29', plan2Period: '/month',
+    plan2f1: 'Unlimited sections', plan2f2: 'Unlimited cards', plan2f3: 'Sync on 2 devices', plan2f4: 'Web panel', plan2f5: 'Email support',
+    plan3Name: 'Clinic', plan3Price: 'R$ 79', plan3Period: '/month',
+    plan3f1: 'Everything in Essential', plan3f2: 'Sync on 5 devices', plan3f3: 'Multiple profiles', plan3f4: 'Usage reports', plan3f5: 'Priority support',
+    planPopular: 'Most popular', planBtnDownload: 'Download free', planBtnSubscribe: 'Subscribe now', planBtnSubscribe2: 'Subscribe now',
+    panelCtaTitle: 'Configure from your computer',
+    panelCtaSub: 'Use the Web Panel to create and edit sections and cards directly from your browser. Faster and easier for therapists and parents.',
+    panelCtaBtn: 'Access the Web Panel',
+    footerPrivacy: 'Privacy Policy', footerPanel: 'Web Panel', footerContact: 'Contact',
+  },
+  es: {
+    navFeatures: 'Funcionalidades', navPlans: 'Planes', navPanel: 'Panel Web', navAccess: 'Acceder al Panel',
+    heroBadge: 'Comunicación Aumentativa y Alternativa',
+    heroTitle: 'La voz de quienes<br><span>necesitan ser escuchados</span>',
+    heroSub: 'Biel AAC es una aplicación de comunicación aumentativa y alternativa para personas con autismo, parálisis cerebral, apraxia y otras necesidades especiales de comunicación.',
+    heroDownload: 'Descargar en Google Play', heroPanel: 'Acceder al Panel Web',
+    heroNote: 'Disponible para Android · iOS próximamente · Gratis para probar',
+    whoLabel: 'Para quién es', whoTitle: 'Comunicación para todos',
+    whoSub: 'Biel AAC fue diseñado para apoyar a personas con diversas necesidades especiales de comunicación.',
+    who1Name: 'Autismo (TEA)', who1Desc: 'Apoyo a la comunicación para personas en el espectro autista',
+    who2Name: 'Parálisis Cerebral', who2Desc: 'Interfaz adaptada para diferentes capacidades motoras',
+    who3Name: 'Apraxia del Habla', who3Desc: 'Alternativa eficaz para dificultades en la producción del habla',
+    who4Name: 'Afasia', who4Desc: 'Apoyo a la comunicación tras un ACV o lesión cerebral',
+    who5Name: 'Terapeutas', who5Desc: 'Herramienta profesional para fonoaudiólogos y terapeutas ocupacionales',
+    who6Name: 'Familias', who6Desc: 'Fácil de configurar y usar en el día a día en casa',
+    featLabel: 'Funcionalidades', featTitle: 'Todo lo que necesitas',
+    featSub: 'Recursos potentes en una interfaz simple e intuitiva.',
+    feat1Title: 'Tarjetas personalizables', feat1Desc: 'Crea tarjetas con íconos, fotos de cámara o galería, colores y vocalizaciones personalizadas.',
+    feat2Title: 'Secciones y subsecciones', feat2Desc: 'Organiza el vocabulario en categorías y subcategorías para una navegación rápida e intuitiva.',
+    feat3Title: 'Voz sintética (TTS)', feat3Desc: 'Vocalización en portugués, inglés, español y francés. Funciona completamente sin conexión.',
+    feat4Title: 'Sincronización en la nube', feat4Desc: 'Configura en el ordenador y úsalo en la tableta. Cambios sincronizados automáticamente.',
+    feat5Title: 'Panel web', feat5Desc: 'Configura secciones y tarjetas desde el navegador. Más rápido para terapeutas.',
+    feat6Title: 'Funciona sin conexión', feat6Desc: 'La comunicación no puede depender de internet. Biel AAC funciona sin conexión.',
+    feat7Title: 'Modo protegido con PIN', feat7Desc: 'Protege la configuración con PIN para que el usuario no la cambie accidentalmente.',
+    feat8Title: 'Búsqueda rápida', feat8Desc: 'Encuentra cualquier palabra o frase al instante con la búsqueda integrada.',
+    feat9Title: '4 idiomas', feat9Desc: 'Interfaz disponible en portugués, inglés, español y francés.',
+    screensLabel: 'Capturas', screensTitle: 'Ve la app en acción', screensPlaceholder: 'Capturas próximamente',
+    plansLabel: 'Planes', plansTitle: 'Simple y transparente', plansSub: 'Comienza gratis y mejora cuando lo necesites.',
+    plan1Name: 'Gratuito', plan1Price: 'R$ 0', plan1Period: 'para siempre',
+    plan1f1: '3 secciones', plan1f2: '5 tarjetas por sección', plan1f3: '1 dispositivo', plan1f4: 'Sin sincronización', plan1f5: 'Sin panel web',
+    plan2Name: 'Esencial', plan2Price: 'R$ 29', plan2Period: '/mes',
+    plan2f1: 'Secciones ilimitadas', plan2f2: 'Tarjetas ilimitadas', plan2f3: 'Sync en 2 dispositivos', plan2f4: 'Panel web', plan2f5: 'Soporte por email',
+    plan3Name: 'Clínica', plan3Price: 'R$ 79', plan3Period: '/mes',
+    plan3f1: 'Todo de Esencial', plan3f2: 'Sync en 5 dispositivos', plan3f3: 'Múltiples perfiles', plan3f4: 'Informes de uso', plan3f5: 'Soporte prioritario',
+    planPopular: 'Más popular', planBtnDownload: 'Descargar gratis', planBtnSubscribe: 'Suscribirse ahora', planBtnSubscribe2: 'Suscribirse ahora',
+    panelCtaTitle: 'Configura desde el ordenador',
+    panelCtaSub: 'Usa el Panel Web para crear y editar secciones y tarjetas directamente desde el navegador. Más rápido para terapeutas y padres.',
+    panelCtaBtn: 'Acceder al Panel Web',
+    footerPrivacy: 'Política de Privacidad', footerPanel: 'Panel Web', footerContact: 'Contacto',
+  },
+  fr: {
+    navFeatures: 'Fonctionnalités', navPlans: 'Plans', navPanel: 'Panneau Web', navAccess: 'Accéder au Panneau',
+    heroBadge: 'Communication Augmentative et Alternative',
+    heroTitle: 'La voix de ceux qui<br><span>ont besoin d\'être entendus</span>',
+    heroSub: 'Biel AAC est une application de communication augmentative et alternative pour les personnes avec autisme, paralysie cérébrale, apraxie et autres besoins spéciaux de communication.',
+    heroDownload: 'Télécharger sur Google Play', heroPanel: 'Accéder au Panneau Web',
+    heroNote: 'Disponible sur Android · iOS bientôt · Gratuit pour essayer',
+    whoLabel: 'Pour qui', whoTitle: 'Communication pour tous',
+    whoSub: 'Biel AAC a été conçu pour aider les personnes ayant divers besoins spéciaux de communication.',
+    who1Name: 'Autisme (TSA)', who1Desc: 'Soutien à la communication pour les personnes autistes',
+    who2Name: 'Paralysie Cérébrale', who2Desc: 'Interface adaptée à différentes capacités motrices',
+    who3Name: 'Apraxie de la Parole', who3Desc: 'Alternative efficace pour les difficultés de production de la parole',
+    who4Name: 'Aphasie', who4Desc: 'Soutien à la communication après un AVC ou une lésion cérébrale',
+    who5Name: 'Thérapeutes', who5Desc: 'Outil professionnel pour orthophonistes et ergothérapeutes',
+    who6Name: 'Familles', who6Desc: 'Facile à configurer et à utiliser au quotidien à la maison',
+    featLabel: 'Fonctionnalités', featTitle: 'Tout ce dont vous avez besoin',
+    featSub: 'Des fonctionnalités puissantes dans une interface simple et intuitive.',
+    feat1Title: 'Cartes personnalisables', feat1Desc: 'Créez des cartes avec des icônes, des photos, des couleurs et des vocalisations personnalisées.',
+    feat2Title: 'Sections et sous-sections', feat2Desc: 'Organisez le vocabulaire en catégories pour une navigation rapide et intuitive.',
+    feat3Title: 'Synthèse vocale (TTS)', feat3Desc: 'Vocalisation en portugais, anglais, espagnol et français. Fonctionne hors ligne.',
+    feat4Title: 'Synchronisation cloud', feat4Desc: 'Configurez sur ordinateur et utilisez sur tablette. Modifications synchronisées automatiquement.',
+    feat5Title: 'Panneau web', feat5Desc: 'Configurez sections et cartes depuis votre navigateur. Plus rapide pour les thérapeutes.',
+    feat6Title: 'Fonctionne hors ligne', feat6Desc: 'La communication ne peut pas dépendre d\'internet. Biel AAC fonctionne sans connexion.',
+    feat7Title: 'Mode protégé par PIN', feat7Desc: 'Protégez les paramètres avec un PIN pour éviter les modifications accidentelles.',
+    feat8Title: 'Recherche rapide', feat8Desc: 'Trouvez n\'importe quel mot ou phrase instantanément avec la recherche intégrée.',
+    feat9Title: '4 langues', feat9Desc: 'Interface disponible en portugais, anglais, espagnol et français.',
+    screensLabel: 'Captures', screensTitle: 'Voir l\'app en action', screensPlaceholder: 'Captures d\'écran bientôt',
+    plansLabel: 'Plans', plansTitle: 'Simple et transparent', plansSub: 'Commencez gratuitement et passez à la version supérieure quand vous en avez besoin.',
+    plan1Name: 'Gratuit', plan1Price: 'R$ 0', plan1Period: 'pour toujours',
+    plan1f1: '3 sections', plan1f2: '5 cartes par section', plan1f3: '1 appareil', plan1f4: 'Sans synchronisation', plan1f5: 'Sans panneau web',
+    plan2Name: 'Essentiel', plan2Price: 'R$ 29', plan2Period: '/mois',
+    plan2f1: 'Sections illimitées', plan2f2: 'Cartes illimitées', plan2f3: 'Sync sur 2 appareils', plan2f4: 'Panneau web', plan2f5: 'Support par email',
+    plan3Name: 'Clinique', plan3Price: 'R$ 79', plan3Period: '/mois',
+    plan3f1: 'Tout de l\'Essentiel', plan3f2: 'Sync sur 5 appareils', plan3f3: 'Profils multiples', plan3f4: 'Rapports d\'utilisation', plan3f5: 'Support prioritaire',
+    planPopular: 'Le plus populaire', planBtnDownload: 'Télécharger gratuitement', planBtnSubscribe: 'S\'abonner maintenant', planBtnSubscribe2: 'S\'abonner maintenant',
+    panelCtaTitle: 'Configurez depuis votre ordinateur',
+    panelCtaSub: 'Utilisez le Panneau Web pour créer et modifier sections et cartes directement depuis votre navigateur. Plus rapide pour les thérapeutes et les parents.',
+    panelCtaBtn: 'Accéder au Panneau Web',
+    footerPrivacy: 'Politique de Confidentialité', footerPanel: 'Panneau Web', footerContact: 'Contact',
+  },
+};
+
+function detectLang() {
+  const nav = navigator.language || 'pt';
+  if (nav.startsWith('pt')) return 'pt';
+  if (nav.startsWith('es')) return 'es';
+  if (nav.startsWith('fr')) return 'fr';
+  return 'en';
+}
+
+let currentLang = detectLang();
+
+function applyLang(lang) {
+  currentLang = lang;
+  const t = STRINGS[lang];
+  // Atualiza todos os elementos com data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      el.innerHTML = t[key];
+    }
+  });
+  // Atualiza botões de idioma
+  ['pt','en','es','fr'].forEach(l => {
+    const btn = document.getElementById('btn-'+l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+}
+
+function setLang(lang) {
+  applyLang(lang);
+  localStorage.setItem('bielaac_lang', lang);
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('bielaac_lang');
+  applyLang(saved || currentLang);
+});
+</script>
+</body>
+</html>
