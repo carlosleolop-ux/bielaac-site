@@ -26,17 +26,18 @@
       padding: 0 48px; height: 64px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-logo img { height: 36px; }
-    .nav-links { display: flex; align-items: center; gap: 32px; }
-    .nav-link { font-size: 14px; color: var(--text-muted); transition: color .2s; }
+    .nav-logo { display: flex; align-items: center; height: 64px; }
+    .nav-logo img { height: 36px; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 24px; flex-wrap: nowrap; }
+    .nav-link { font-size: 14px; color: var(--text-muted); transition: color .2s; white-space: nowrap; }
     .nav-link:hover { color: var(--text); }
     .nav-btn {
       background: var(--red); color: white; padding: 9px 20px;
       border-radius: 8px; font-size: 14px; font-weight: 600;
-      transition: opacity .2s;
+      transition: opacity .2s; white-space: nowrap;
     }
     .nav-btn:hover { opacity: .85; }
-    .lang-nav { display: flex; gap: 4px; }
+    .lang-nav { display: flex; gap: 4px; flex-shrink: 0; }
     .lang-nav button {
       background: transparent; border: 1px solid var(--border); border-radius: 5px;
       color: var(--text-dim); font-size: 11px; font-weight: 700; padding: 4px 8px;
@@ -44,6 +45,14 @@
     }
     .lang-nav button:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
     .lang-nav button.active { background: rgba(204,0,0,.2); border-color: var(--red); color: white; }
+    @media (max-width: 900px) {
+      nav { padding: 0 16px; height: 56px; }
+      .nav-link { display: none; }
+      .nav-links { gap: 10px; }
+      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .nav-logo { height: 56px; }
+      .nav-logo img { height: 30px; }
+    }
 
     /* ─── HERO ─── */
     .hero {
@@ -203,7 +212,7 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="logo_horizontal.png" alt="Biel AAC" onerror="this.style.display='none'" style="height:35px">
+    <img src="logo_horizontal.png" alt="Biel AAC" onerror="this.style.display='none'" style="height:40px">
   </a>
   <div class="nav-links">
     <a href="#who" class="nav-link" data-i18n="navWho">Para quem</a>
@@ -223,7 +232,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'" style="height:200px;display:block;margin:0 auto 32px">
+    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'" style="height:144px;display:block;margin:0 auto 32px">
     <h1 class="hero-title" data-i18n="heroTitle">A voz de quem<br><span>precisa ser ouvido</span></h1>
     <p class="hero-sub" data-i18n="heroSub">O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.</p>
     <div class="hero-actions">
