@@ -59,7 +59,7 @@
       border-radius: 20px; padding: 6px 16px; margin-bottom: 32px;
       font-size: 13px; color: #ff6666;
     }
-    .hero-logo { height: 80px; margin-bottom: 32px; }
+    .hero-logo { height: 144px; margin-bottom: 32px; display: block; margin-left: auto; margin-right: auto; }
     .hero-title {
       font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.1;
       margin-bottom: 20px; letter-spacing: -1px;
@@ -172,7 +172,7 @@
       background: var(--darker); border-top: 1px solid var(--border);
       padding: 48px; text-align: center;
     }
-    .footer-logo { height: 32px; margin-bottom: 20px; opacity: .7; }
+    .footer-logo { height: 64px; margin-bottom: 20px; opacity: .8; }
     .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
     .footer-link { font-size: 13px; color: var(--text-dim); transition: color .2s; }
     .footer-link:hover { color: var(--text-muted); }
@@ -203,9 +203,10 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="logo_branca.png" alt="Biel AAC" onerror="this.style.display='none'">
+    <img src="logo_horizontal.png" alt="Biel AAC" onerror="this.style.display='none'" style="height:40px">
   </a>
   <div class="nav-links">
+    <a href="#who" class="nav-link" data-i18n="navWho">Para quem</a>
     <a href="#features" class="nav-link" data-i18n="navFeatures">Funcionalidades</a>
     <a href="#plans" class="nav-link" data-i18n="navPlans">Planos</a>
     <a href="#panel" class="nav-link" data-i18n="navPanel">Painel Web</a>
@@ -222,11 +223,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">
-      <span>🗣️</span>
-      <span data-i18n="heroBadge">Comunicação Aumentativa e Alternativa</span>
-    </div>
-    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'">
+    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'" style="height:144px;display:block;margin:0 auto 32px">
     <h1 class="hero-title" data-i18n="heroTitle">A voz de quem<br><span>precisa ser ouvido</span></h1>
     <p class="hero-sub" data-i18n="heroSub">O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.</p>
     <div class="hero-actions">
@@ -423,7 +420,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <img src="logo_branca.png" alt="Biel AAC" class="footer-logo" onerror="this.style.display='none'">
+  <img src="logo_branca.png" alt="Biel AAC" class="footer-logo" onerror="this.style.display='none'" style="height:64px">
   <div class="footer-links">
     <a href="https://privacy.bielaac.com" class="footer-link" data-i18n="footerPrivacy">Política de Privacidade</a>
     <a href="https://panel.bielaac.com" class="footer-link" data-i18n="footerPanel">Painel Web</a>
@@ -436,7 +433,7 @@
 // ─── INTERNACIONALIZAÇÃO ─────────────────────────────────────
 const STRINGS = {
   pt: {
-    navFeatures: 'Funcionalidades', navPlans: 'Planos', navPanel: 'Painel Web', navAccess: 'Acessar Painel',
+    navWho: 'Para quem', navFeatures: 'Funcionalidades', navPlans: 'Planos', navPanel: 'Painel Web', navAccess: 'Acessar Painel',
     heroBadge: 'Comunicação Aumentativa e Alternativa',
     heroTitle: 'A voz de quem<br><span>precisa ser ouvido</span>',
     heroSub: 'O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.',
@@ -476,7 +473,7 @@ const STRINGS = {
     footerPrivacy: 'Política de Privacidade', footerPanel: 'Painel Web', footerContact: 'Contato',
   },
   en: {
-    navFeatures: 'Features', navPlans: 'Plans', navPanel: 'Web Panel', navAccess: 'Access Panel',
+    navWho: 'For whom', navFeatures: 'Features', navPlans: 'Plans', navPanel: 'Web Panel', navAccess: 'Access Panel',
     heroBadge: 'Augmentative and Alternative Communication',
     heroTitle: 'The voice of those who<br><span>need to be heard</span>',
     heroSub: 'Biel AAC is an augmentative and alternative communication app for people with autism, cerebral palsy, apraxia, and other special communication needs.',
@@ -516,7 +513,7 @@ const STRINGS = {
     footerPrivacy: 'Privacy Policy', footerPanel: 'Web Panel', footerContact: 'Contact',
   },
   es: {
-    navFeatures: 'Funcionalidades', navPlans: 'Planes', navPanel: 'Panel Web', navAccess: 'Acceder al Panel',
+    navWho: 'Para quién', navFeatures: 'Funcionalidades', navPlans: 'Planes', navPanel: 'Panel Web', navAccess: 'Acceder al Panel',
     heroBadge: 'Comunicación Aumentativa y Alternativa',
     heroTitle: 'La voz de quienes<br><span>necesitan ser escuchados</span>',
     heroSub: 'Biel AAC es una aplicación de comunicación aumentativa y alternativa para personas con autismo, parálisis cerebral, apraxia y otras necesidades especiales de comunicación.',
@@ -556,7 +553,7 @@ const STRINGS = {
     footerPrivacy: 'Política de Privacidad', footerPanel: 'Panel Web', footerContact: 'Contacto',
   },
   fr: {
-    navFeatures: 'Fonctionnalités', navPlans: 'Plans', navPanel: 'Panneau Web', navAccess: 'Accéder au Panneau',
+    navWho: 'Pour qui', navFeatures: 'Fonctionnalités', navPlans: 'Plans', navPanel: 'Panneau Web', navAccess: 'Accéder au Panneau',
     heroBadge: 'Communication Augmentative et Alternative',
     heroTitle: 'La voix de ceux qui<br><span>ont besoin d\'être entendus</span>',
     heroSub: 'Biel AAC est une application de communication augmentative et alternative pour les personnes avec autisme, paralysie cérébrale, apraxie et autres besoins spéciaux de communication.',
