@@ -46,12 +46,33 @@
     .lang-nav button:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
     .lang-nav button.active { background: rgba(204,0,0,.2); border-color: var(--red); color: white; }
     @media (max-width: 900px) {
-      nav { padding: 0 16px; height: 56px; }
+      nav { padding: 0 14px; height: 56px; }
       .nav-link { display: none; }
-      .nav-links { gap: 10px; }
-      .nav-btn { padding: 8px 14px; font-size: 13px; }
+      .nav-links { gap: 8px; }
+      .nav-btn { padding: 8px 12px; font-size: 13px; }
       .nav-logo { height: 56px; }
-      .nav-logo img { height: 30px; }
+      .nav-logo img { height: 28px; }
+      .lang-nav { display: none; }
+    }
+    /* Lang bar abaixo da nav no mobile */
+    .mobile-lang {
+      display: none;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(15,15,15,0.95);
+      border-bottom: 1px solid var(--border);
+      position: fixed; top: 56px; left: 0; right: 0; z-index: 99;
+    }
+    .mobile-lang button {
+      background: transparent; border: 1px solid var(--border); border-radius: 5px;
+      color: var(--text-dim); font-size: 12px; font-weight: 700; padding: 5px 12px;
+      cursor: pointer; transition: all .15s;
+    }
+    .mobile-lang button.active { background: rgba(204,0,0,.2); border-color: var(--red); color: white; }
+    @media (max-width: 900px) {
+      .mobile-lang { display: flex; }
+      .hero { padding-top: 120px; }
     }
 
     /* ─── HERO ─── */
@@ -212,7 +233,7 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
-    <img src="logo_horizontal.png" alt="Biel AAC" onerror="this.style.display='none'" style="height:35px">
+    <img src="logo_horizontal.png" alt="Biel AAC" onerror="this.style.display='none'" style="height:40px">
   </a>
   <div class="nav-links">
     <a href="#who" class="nav-link" data-i18n="navWho">Para quem</a>
@@ -228,11 +249,18 @@
     <a href="https://panel.bielaac.com" class="nav-btn" data-i18n="navAccess">Acessar Painel</a>
   </div>
 </nav>
+<!-- Lang bar mobile -->
+<div class="mobile-lang">
+  <button onclick="setLang('pt')" class="active" id="mbtn-pt">PT</button>
+  <button onclick="setLang('en')" id="mbtn-en">EN</button>
+  <button onclick="setLang('es')" id="mbtn-es">ES</button>
+  <button onclick="setLang('fr')" id="mbtn-fr">FR</button>
+</div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'" style="height:200px;display:block;margin:0 auto 32px">
+    <img src="logo_splashscreen.png" alt="Biel AAC" class="hero-logo" onerror="this.style.display='none'" style="height:144px;display:block;margin:0 auto 32px">
     <h1 class="hero-title" data-i18n="heroTitle">A voz de quem<br><span>precisa ser ouvido</span></h1>
     <p class="hero-sub" data-i18n="heroSub">O Biel AAC é um aplicativo de comunicação aumentativa e alternativa para pessoas com autismo, paralisia cerebral, apraxia e outras necessidades especiais de comunicação.</p>
     <div class="hero-actions">
@@ -627,6 +655,8 @@ function applyLang(lang) {
   ['pt','en','es','fr'].forEach(l => {
     const btn = document.getElementById('btn-'+l);
     if (btn) btn.classList.toggle('active', l === lang);
+    const mbtn = document.getElementById('mbtn-'+l);
+    if (mbtn) mbtn.classList.toggle('active', l === lang);
   });
   document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
 }
@@ -634,6 +664,11 @@ function applyLang(lang) {
 function setLang(lang) {
   applyLang(lang);
   localStorage.setItem('bielaac_lang', lang);
+  // Atualiza botões mobile
+  ['pt','en','es','fr'].forEach(l => {
+    const btn = document.getElementById('mbtn-'+l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
 }
 
 // Init
