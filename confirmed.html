@@ -26,107 +26,54 @@
     overflow: hidden;
     text-align: center;
   }
-  .card-header {
-    background: #0A0A0A;
-    padding: 36px 32px;
-  }
-  .card-header img {
-    max-width: 180px;
-    width: 100%;
-    height: auto;
-  }
-  .card-body {
-    padding: 40px 32px;
-  }
+  .card-header { background: #0A0A0A; padding: 36px 32px; }
+  .card-header img { max-width: 180px; width: 100%; height: auto; }
+  .card-body { padding: 40px 32px; }
   .check-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #2E7D32;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #2E7D32; display: flex; align-items: center; justify-content: center;
     margin: 0 auto 20px;
   }
   .check-icon svg { width: 28px; height: 28px; }
   h1 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
-  p {
-    color: rgba(255,255,255,0.6);
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 8px;
-  }
+  p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
   .hint {
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    font-size: 12px;
-    color: rgba(255,255,255,0.35);
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px; color: rgba(255,255,255,0.35);
   }
   .btn {
-    display: inline-block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 13px 28px;
-    background: #CC0000;
-    color: #FFFFFF;
-    text-decoration: none;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    text-align: center;
+    display: inline-block; width: 100%; margin-top: 20px; padding: 13px 28px;
+    background: #CC0000; color: #FFFFFF; text-decoration: none; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center;
   }
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   .form-row { text-align: left; margin-bottom: 14px; }
   .form-label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: .6px;
-    margin-bottom: 6px;
+    display: block; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px;
   }
   .form-input {
-    width: 100%;
-    background: #1A1A1A;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 12px 14px;
-    color: #FFFFFF;
-    font-size: 14px;
-    outline: none;
+    width: 100%; background: #1A1A1A; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; padding: 12px 14px; color: #FFFFFF; font-size: 14px; outline: none;
   }
   .form-input:focus { border-color: #CC0000; }
   .error-msg {
-    background: #8B0000;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    margin: 0 0 14px;
-    text-align: left;
+    background: #8B0000; border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; margin: 0 0 14px; text-align: left;
   }
   .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    display: inline-block;
-    animation: spin .7s linear infinite;
-    vertical-align: middle;
+    width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff; border-radius: 50%; display: inline-block;
+    animation: spin .7s linear infinite; vertical-align: middle;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
   <div class="card">
-    <div class="card-header">
-      <img src="/logo_branca.png" alt="Biel AAC" />
-    </div>
+    <div class="card-header"><img src="/logo_branca.png" alt="Biel AAC" /></div>
     <div class="card-body" id="card-body">
-      <!-- Preenchido dinamicamente pelo script -->
+      <div style="padding:20px 0;"><span class="spinner" style="width:24px;height:24px;"></span></div>
     </div>
   </div>
 
@@ -150,7 +97,7 @@
       saving: 'Salvando...',
       passwordTooShort: 'A senha precisa ter pelo menos 6 caracteres.',
       passwordMismatch: 'As senhas não coincidem.',
-      invalidLink: 'Este link é inválido ou expirou. Solicite um novo email de redefinição de senha.',
+      invalidLink: 'Este link é inválido ou expirou. Solicite um novo email.',
       recoverySuccessTitle: 'Senha redefinida!',
       recoverySuccessMessage: 'Sua senha foi alterada com sucesso.',
       genericError: 'Não foi possível concluir a ação. Tente novamente.',
@@ -172,7 +119,7 @@
       saving: 'Saving...',
       passwordTooShort: 'Password must be at least 6 characters.',
       passwordMismatch: 'Passwords do not match.',
-      invalidLink: 'This link is invalid or has expired. Please request a new password reset email.',
+      invalidLink: 'This link is invalid or has expired. Please request a new email.',
       recoverySuccessTitle: 'Password reset!',
       recoverySuccessMessage: 'Your password has been successfully changed.',
       genericError: 'Could not complete the action. Please try again.',
@@ -194,7 +141,7 @@
       saving: 'Guardando...',
       passwordTooShort: 'La contraseña debe tener al menos 6 caracteres.',
       passwordMismatch: 'Las contraseñas no coinciden.',
-      invalidLink: 'Este enlace no es válido o expiró. Solicita un nuevo email de restablecimiento.',
+      invalidLink: 'Este enlace no es válido o expiró. Solicita un nuevo email.',
       recoverySuccessTitle: '¡Contraseña restablecida!',
       recoverySuccessMessage: 'Tu contraseña fue cambiada con éxito.',
       genericError: 'No se pudo completar la acción. Inténtalo de nuevo.',
@@ -216,7 +163,7 @@
       saving: 'Enregistrement...',
       passwordTooShort: 'Le mot de passe doit contenir au moins 6 caractères.',
       passwordMismatch: 'Les mots de passe ne correspondent pas.',
-      invalidLink: 'Ce lien est invalide ou a expiré. Veuillez demander un nouvel email de réinitialisation.',
+      invalidLink: 'Ce lien est invalide ou a expiré. Veuillez demander un nouvel email.',
       recoverySuccessTitle: 'Mot de passe réinitialisé !',
       recoverySuccessMessage: 'Votre mot de passe a été modifié avec succès.',
       genericError: "Impossible de terminer l'action. Réessayez.",
@@ -231,29 +178,36 @@
     return 'en';
   }
 
+  // Leitura best-effort do "type" (signup/invite/email_change/recovery), só
+  // para escolher o TEXTO certo — a decisão real de "é reset de senha?" vem
+  // do evento PASSWORD_RECOVERY abaixo, não deste parâmetro.
+  function detectFlowTypeHint() {
+    const fromHash = new URLSearchParams((window.location.hash || '').replace(/^#/, '')).get('type');
+    const fromQuery = new URLSearchParams(window.location.search || '').get('type');
+    return fromHash || fromQuery || 'default';
+  }
+
   const SUPABASE_URL = 'https://bhlibvcmmarljcbbpzbc.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobGlidmNtbWFybGpjYmJwemJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MTA3MDQsImV4cCI6MjA5ODE4NjcwNH0.TJY1jR1QBzhb1_dbZafoZxEfkltSjIq4jchXFZqChYw';
+  // detectSessionInUrl (padrão: true) faz o próprio cliente entender a URL,
+  // seja fluxo PKCE (?code=...) ou implícito (#access_token=...) — não
+  // precisamos mais interpretar isso manualmente.
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const lang = detectLang();
   const t = STRINGS[lang];
   document.documentElement.lang = lang;
 
-  const hash = window.location.hash || '';
-  const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
-  const flowType = hashParams.get('type') || 'default';
-  const accessToken = hashParams.get('access_token');
-  const refreshToken = hashParams.get('refresh_token');
-
   const body = document.getElementById('card-body');
+  let resolved = false;
 
   function checkIconHtml() {
     return '<div class="check-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
       '<path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   }
 
-  // ─── FLUXO: RESET DE SENHA (exige nova senha antes de mostrar sucesso) ───
   function renderRecoveryForm() {
+    resolved = true;
     body.innerHTML =
       '<h1>' + t.recoveryTitle + '</h1>' +
       '<p style="margin-bottom:24px;">' + t.recoverySub + '</p>' +
@@ -298,45 +252,44 @@
     }
   }
 
-  // ─── FLUXO: CONFIRMAÇÃO SIMPLES (signup, invite, email_change...) ───
   function renderSuccess(title, message) {
+    resolved = true;
     body.innerHTML =
       checkIconHtml() +
       '<h1>' + title + '</h1>' +
       '<p>' + message + '</p>' +
       '<p class="hint">' + t.hintDesktop + '</p>' +
-      '<a id="open-app-btn" class="btn" href="#">' + t.openApp + '</a>';
-
-    const deepLink = 'bielaac://login-callback' + hash;
-    document.getElementById('open-app-btn').href = deepLink;
+      '<a id="open-app-btn" class="btn" href="bielaac://login-callback">' + t.openApp + '</a>';
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
-      window.location.href = deepLink;
+      window.location.href = 'bielaac://login-callback';
     }
   }
 
   function renderInvalidLink() {
-    body.innerHTML =
-      '<h1>' + t.recoveryTitle + '</h1>' +
-      '<div class="error-msg">⚠️ ' + t.invalidLink + '</div>';
+    resolved = true;
+    body.innerHTML = '<h1>' + t.recoveryTitle + '</h1><div class="error-msg">⚠️ ' + t.invalidLink + '</div>';
   }
 
-  // ─── ROTEAMENTO ─────────────────────────────────────────────
-  if (flowType === 'recovery') {
-    if (!accessToken || !refreshToken) {
-      renderInvalidLink();
-    } else {
-      sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
-        .then(({ error }) => {
-          if (error) { renderInvalidLink(); return; }
-          renderRecoveryForm();
-        });
+  // ─── ROTEAMENTO VIA EVENTOS DE AUTH (funciona com PKCE e implicit) ────
+  const flowHint = detectFlowTypeHint();
+
+  sb.auth.onAuthStateChange((event, session) => {
+    if (resolved) return;
+    if (event === 'PASSWORD_RECOVERY') {
+      renderRecoveryForm();
+    } else if (event === 'SIGNED_IN' && flowHint !== 'recovery') {
+      const copy = t.success[flowHint] || t.success.default;
+      renderSuccess(copy.title, copy.message);
     }
-  } else {
-    const copy = t.success[flowType] || t.success.default;
-    renderSuccess(copy.title, copy.message);
-  }
+  });
+
+  // Se depois de alguns segundos nada foi resolvido (link inválido/expirado,
+  // ou já usado antes), mostramos um erro em vez de deixar girando pra sempre.
+  setTimeout(() => {
+    if (!resolved) renderInvalidLink();
+  }, 6000);
 </script>
 </body>
 </html>
