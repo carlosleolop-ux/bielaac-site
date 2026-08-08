@@ -104,26 +104,38 @@
   // ─── DETECÇÃO DE IDIOMA ─────────────────────────────────────
   const STRINGS = {
     pt: {
-      title: 'Conta confirmada!',
-      message: 'Sua conta no Biel AAC foi confirmada com sucesso.',
+      signup: { title: 'Conta confirmada!', message: 'Sua conta no Biel AAC foi confirmada com sucesso.' },
+      recovery: { title: 'Senha redefinida!', message: 'Você já pode entrar no Biel AAC com sua nova senha.' },
+      invite: { title: 'Convite aceito!', message: 'Sua conta no Biel AAC está pronta para uso.' },
+      email_change: { title: 'Email atualizado!', message: 'Seu email no Biel AAC foi atualizado com sucesso.' },
+      default: { title: 'Tudo certo!', message: 'A ação foi concluída com sucesso.' },
       hintDesktop: 'Agora, abra o aplicativo Biel AAC no tablet ou celular onde ele está instalado e faça login normalmente.',
       openApp: 'Abrir o app',
     },
     en: {
-      title: 'Account confirmed!',
-      message: 'Your Biel AAC account has been successfully confirmed.',
+      signup: { title: 'Account confirmed!', message: 'Your Biel AAC account has been successfully confirmed.' },
+      recovery: { title: 'Password reset!', message: 'You can now log in to Biel AAC with your new password.' },
+      invite: { title: 'Invite accepted!', message: 'Your Biel AAC account is ready to use.' },
+      email_change: { title: 'Email updated!', message: 'Your Biel AAC email has been successfully updated.' },
+      default: { title: 'All set!', message: 'The action was completed successfully.' },
       hintDesktop: 'Now, open the Biel AAC app on the tablet or phone where it is installed and log in normally.',
       openApp: 'Open the app',
     },
     es: {
-      title: '¡Cuenta confirmada!',
-      message: 'Tu cuenta de Biel AAC fue confirmada con éxito.',
+      signup: { title: '¡Cuenta confirmada!', message: 'Tu cuenta de Biel AAC fue confirmada con éxito.' },
+      recovery: { title: '¡Contraseña restablecida!', message: 'Ya puedes iniciar sesión en Biel AAC con tu nueva contraseña.' },
+      invite: { title: '¡Invitación aceptada!', message: 'Tu cuenta de Biel AAC está lista para usar.' },
+      email_change: { title: '¡Email actualizado!', message: 'Tu email de Biel AAC fue actualizado con éxito.' },
+      default: { title: '¡Listo!', message: 'La acción se completó con éxito.' },
       hintDesktop: 'Ahora, abre la aplicación Biel AAC en la tablet o el teléfono donde está instalada e inicia sesión normalmente.',
       openApp: 'Abrir la app',
     },
     fr: {
-      title: 'Compte confirmé !',
-      message: 'Votre compte Biel AAC a été confirmé avec succès.',
+      signup: { title: 'Compte confirmé !', message: 'Votre compte Biel AAC a été confirmé avec succès.' },
+      recovery: { title: 'Mot de passe réinitialisé !', message: 'Vous pouvez maintenant vous connecter à Biel AAC avec votre nouveau mot de passe.' },
+      invite: { title: 'Invitation acceptée !', message: 'Votre compte Biel AAC est prêt à être utilisé.' },
+      email_change: { title: 'Email mis à jour !', message: 'Votre email Biel AAC a été mis à jour avec succès.' },
+      default: { title: "C'est fait !", message: "L'action a été effectuée avec succès." },
       hintDesktop: "Ouvrez maintenant l'application Biel AAC sur la tablette ou le téléphone où elle est installée et connectez-vous normalement.",
       openApp: "Ouvrir l'app",
     },
@@ -137,17 +149,27 @@
     return 'en';
   }
 
+  // O Supabase anexa o tipo do fluxo (signup, recovery, invite, email_change...)
+  // no fragmento da URL, ex: #access_token=...&type=recovery
+  function detectFlowType() {
+    const hash = window.location.hash || '';
+    const params = new URLSearchParams(hash.replace(/^#/, ''));
+    return params.get('type') || 'default';
+  }
+
   const lang = detectLang();
+  const flowType = detectFlowType();
   const t = STRINGS[lang];
+  const copy = t[flowType] || t.default;
+
   document.documentElement.lang = lang;
-  document.getElementById('title').textContent = t.title;
-  document.getElementById('message').textContent = t.message;
+  document.getElementById('title').textContent = copy.title;
+  document.getElementById('message').textContent = copy.message;
   document.getElementById('hint-desktop').textContent = t.hintDesktop;
 
   // ─── TENTATIVA DE ABRIR O APP (funciona em celular/tablet com o app instalado) ───
-  // O Supabase anexa os tokens de sessão no fragmento da URL (#access_token=...).
-  // Repassamos isso pro app via deep link, para que ele já entre logado, sem
-  // pedir a senha de novo.
+  // Repassamos os tokens de sessão pro app via deep link, para que ele já
+  // entre logado, sem pedir a senha de novo.
   const hash = window.location.hash || '';
   const deepLink = 'bielaac://login-callback' + hash;
 
