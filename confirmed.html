@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biel AAC</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1A1A1A;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #2A2A2A;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    max-width: 440px;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+  }
+  .card-header {
+    background: #0A0A0A;
+    padding: 36px 32px;
+  }
+  .card-header img {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+  }
+  .card-body {
+    padding: 40px 32px;
+  }
+  .check-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #2E7D32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .check-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  p {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .hint {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 13px 28px;
+    background: #CC0000;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <img src="/logo_branca.png" alt="Biel AAC" />
+    </div>
+    <div class="card-body">
+      <div class="check-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 id="title">Conta confirmada!</h1>
+      <p id="message">Sua conta no Biel AAC foi confirmada com sucesso.</p>
+      <p id="hint-desktop" class="hint">Agora, abra o aplicativo Biel AAC no tablet ou celular onde ele está instalado e faça login normalmente.</p>
+      <a id="open-app-btn" class="btn" href="#" style="display:none;">Abrir o app</a>
+    </div>
+  </div>
+
+<script>
+  // ─── DETECÇÃO DE IDIOMA ─────────────────────────────────────
+  const STRINGS = {
+    pt: {
+      title: 'Conta confirmada!',
+      message: 'Sua conta no Biel AAC foi confirmada com sucesso.',
+      hintDesktop: 'Agora, abra o aplicativo Biel AAC no tablet ou celular onde ele está instalado e faça login normalmente.',
+      openApp: 'Abrir o app',
+    },
+    en: {
+      title: 'Account confirmed!',
+      message: 'Your Biel AAC account has been successfully confirmed.',
+      hintDesktop: 'Now, open the Biel AAC app on the tablet or phone where it is installed and log in normally.',
+      openApp: 'Open the app',
+    },
+    es: {
+      title: '¡Cuenta confirmada!',
+      message: 'Tu cuenta de Biel AAC fue confirmada con éxito.',
+      hintDesktop: 'Ahora, abre la aplicación Biel AAC en la tablet o el teléfono donde está instalada e inicia sesión normalmente.',
+      openApp: 'Abrir la app',
+    },
+    fr: {
+      title: 'Compte confirmé !',
+      message: 'Votre compte Biel AAC a été confirmé avec succès.',
+      hintDesktop: "Ouvrez maintenant l'application Biel AAC sur la tablette ou le téléphone où elle est installée et connectez-vous normalement.",
+      openApp: "Ouvrir l'app",
+    },
+  };
+
+  function detectLang() {
+    const nav = (navigator.language || 'pt').toLowerCase();
+    if (nav.startsWith('pt')) return 'pt';
+    if (nav.startsWith('es')) return 'es';
+    if (nav.startsWith('fr')) return 'fr';
+    return 'en';
+  }
+
+  const lang = detectLang();
+  const t = STRINGS[lang];
+  document.documentElement.lang = lang;
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('message').textContent = t.message;
+  document.getElementById('hint-desktop').textContent = t.hintDesktop;
+
+  // ─── TENTATIVA DE ABRIR O APP (funciona em celular/tablet com o app instalado) ───
+  // O Supabase anexa os tokens de sessão no fragmento da URL (#access_token=...).
+  // Repassamos isso pro app via deep link, para que ele já entre logado, sem
+  // pedir a senha de novo.
+  const hash = window.location.hash || '';
+  const deepLink = 'bielaac://login-callback' + hash;
+
+  const openBtn = document.getElementById('open-app-btn');
+  openBtn.href = deepLink;
+  openBtn.textContent = t.openApp;
+  openBtn.style.display = 'inline-block';
+
+  // Em dispositivos móveis, tenta abrir automaticamente. Se o app não estiver
+  // instalado ou não for um dispositivo móvel, nada visível acontece — a
+  // pessoa só vê a mensagem de sucesso e pode clicar no botão manualmente.
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile) {
+    window.location.href = deepLink;
+  }
+</script>
+</body>
+</html>
