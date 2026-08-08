@@ -189,10 +189,12 @@
 
   const SUPABASE_URL = 'https://bhlibvcmmarljcbbpzbc.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobGlidmNtbWFybGpjYmJwemJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MTA3MDQsImV4cCI6MjA5ODE4NjcwNH0.TJY1jR1QBzhb1_dbZafoZxEfkltSjIq4jchXFZqChYw';
-  // detectSessionInUrl (padrão: true) faz o próprio cliente entender a URL,
-  // seja fluxo PKCE (?code=...) ou implícito (#access_token=...) — não
-  // precisamos mais interpretar isso manualmente.
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // O app Flutter usa AuthFlowType.implicit — os links de email trazem os
+  // tokens prontos no fragmento da URL (#access_token=...), sem depender de
+  // nenhum segredo local. detectSessionInUrl faz esse reconhecimento sozinho.
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { detectSessionInUrl: true, flowType: 'implicit' },
+  });
 
   const lang = detectLang();
   const t = STRINGS[lang];
