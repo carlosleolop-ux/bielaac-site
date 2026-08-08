@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biel AAC</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -47,15 +48,8 @@
     justify-content: center;
     margin: 0 auto 20px;
   }
-  .check-icon svg {
-    width: 28px;
-    height: 28px;
-  }
-  h1 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
+  .check-icon svg { width: 28px; height: 28px; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
   p {
     color: rgba(255,255,255,0.6);
     font-size: 14px;
@@ -71,15 +65,59 @@
   }
   .btn {
     display: inline-block;
+    width: 100%;
     margin-top: 20px;
     padding: 13px 28px;
     background: #CC0000;
     color: #FFFFFF;
     text-decoration: none;
+    border: none;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 700;
+    cursor: pointer;
+    text-align: center;
   }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .form-row { text-align: left; margin-bottom: 14px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    background: #1A1A1A;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #FFFFFF;
+    font-size: 14px;
+    outline: none;
+  }
+  .form-input:focus { border-color: #CC0000; }
+  .error-msg {
+    background: #8B0000;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin: 0 0 14px;
+    text-align: left;
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin .7s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -87,57 +125,101 @@
     <div class="card-header">
       <img src="/logo_branca.png" alt="Biel AAC" />
     </div>
-    <div class="card-body">
-      <div class="check-icon">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <h1 id="title">Conta confirmada!</h1>
-      <p id="message">Sua conta no Biel AAC foi confirmada com sucesso.</p>
-      <p id="hint-desktop" class="hint">Agora, abra o aplicativo Biel AAC no tablet ou celular onde ele está instalado e faça login normalmente.</p>
-      <a id="open-app-btn" class="btn" href="#" style="display:none;">Abrir o app</a>
+    <div class="card-body" id="card-body">
+      <!-- Preenchido dinamicamente pelo script -->
     </div>
   </div>
 
 <script>
-  // ─── DETECÇÃO DE IDIOMA ─────────────────────────────────────
+  // ─── TEXTOS POR IDIOMA ──────────────────────────────────────
   const STRINGS = {
     pt: {
-      signup: { title: 'Conta confirmada!', message: 'Sua conta no Biel AAC foi confirmada com sucesso.' },
-      recovery: { title: 'Senha redefinida!', message: 'Você já pode entrar no Biel AAC com sua nova senha.' },
-      invite: { title: 'Convite aceito!', message: 'Sua conta no Biel AAC está pronta para uso.' },
-      email_change: { title: 'Email atualizado!', message: 'Seu email no Biel AAC foi atualizado com sucesso.' },
-      default: { title: 'Tudo certo!', message: 'A ação foi concluída com sucesso.' },
+      success: {
+        signup: { title: 'Conta confirmada!', message: 'Sua conta no Biel AAC foi confirmada com sucesso.' },
+        invite: { title: 'Convite aceito!', message: 'Sua conta no Biel AAC está pronta para uso.' },
+        email_change: { title: 'Email atualizado!', message: 'Seu email no Biel AAC foi atualizado com sucesso.' },
+        default: { title: 'Tudo certo!', message: 'A ação foi concluída com sucesso.' },
+      },
       hintDesktop: 'Agora, abra o aplicativo Biel AAC no tablet ou celular onde ele está instalado e faça login normalmente.',
       openApp: 'Abrir o app',
+      recoveryTitle: 'Crie uma nova senha',
+      recoverySub: 'Escolha uma nova senha para sua conta Biel AAC.',
+      newPassword: 'Nova senha',
+      confirmPassword: 'Confirmar nova senha',
+      savePassword: 'Salvar nova senha',
+      saving: 'Salvando...',
+      passwordTooShort: 'A senha precisa ter pelo menos 6 caracteres.',
+      passwordMismatch: 'As senhas não coincidem.',
+      invalidLink: 'Este link é inválido ou expirou. Solicite um novo email de redefinição de senha.',
+      recoverySuccessTitle: 'Senha redefinida!',
+      recoverySuccessMessage: 'Sua senha foi alterada com sucesso.',
+      genericError: 'Não foi possível concluir a ação. Tente novamente.',
     },
     en: {
-      signup: { title: 'Account confirmed!', message: 'Your Biel AAC account has been successfully confirmed.' },
-      recovery: { title: 'Password reset!', message: 'You can now log in to Biel AAC with your new password.' },
-      invite: { title: 'Invite accepted!', message: 'Your Biel AAC account is ready to use.' },
-      email_change: { title: 'Email updated!', message: 'Your Biel AAC email has been successfully updated.' },
-      default: { title: 'All set!', message: 'The action was completed successfully.' },
+      success: {
+        signup: { title: 'Account confirmed!', message: 'Your Biel AAC account has been successfully confirmed.' },
+        invite: { title: 'Invite accepted!', message: 'Your Biel AAC account is ready to use.' },
+        email_change: { title: 'Email updated!', message: 'Your Biel AAC email has been successfully updated.' },
+        default: { title: 'All set!', message: 'The action was completed successfully.' },
+      },
       hintDesktop: 'Now, open the Biel AAC app on the tablet or phone where it is installed and log in normally.',
       openApp: 'Open the app',
+      recoveryTitle: 'Create a new password',
+      recoverySub: 'Choose a new password for your Biel AAC account.',
+      newPassword: 'New password',
+      confirmPassword: 'Confirm new password',
+      savePassword: 'Save new password',
+      saving: 'Saving...',
+      passwordTooShort: 'Password must be at least 6 characters.',
+      passwordMismatch: 'Passwords do not match.',
+      invalidLink: 'This link is invalid or has expired. Please request a new password reset email.',
+      recoverySuccessTitle: 'Password reset!',
+      recoverySuccessMessage: 'Your password has been successfully changed.',
+      genericError: 'Could not complete the action. Please try again.',
     },
     es: {
-      signup: { title: '¡Cuenta confirmada!', message: 'Tu cuenta de Biel AAC fue confirmada con éxito.' },
-      recovery: { title: '¡Contraseña restablecida!', message: 'Ya puedes iniciar sesión en Biel AAC con tu nueva contraseña.' },
-      invite: { title: '¡Invitación aceptada!', message: 'Tu cuenta de Biel AAC está lista para usar.' },
-      email_change: { title: '¡Email actualizado!', message: 'Tu email de Biel AAC fue actualizado con éxito.' },
-      default: { title: '¡Listo!', message: 'La acción se completó con éxito.' },
+      success: {
+        signup: { title: '¡Cuenta confirmada!', message: 'Tu cuenta de Biel AAC fue confirmada con éxito.' },
+        invite: { title: '¡Invitación aceptada!', message: 'Tu cuenta de Biel AAC está lista para usar.' },
+        email_change: { title: '¡Email actualizado!', message: 'Tu email de Biel AAC fue actualizado con éxito.' },
+        default: { title: '¡Listo!', message: 'La acción se completó con éxito.' },
+      },
       hintDesktop: 'Ahora, abre la aplicación Biel AAC en la tablet o el teléfono donde está instalada e inicia sesión normalmente.',
       openApp: 'Abrir la app',
+      recoveryTitle: 'Crea una nueva contraseña',
+      recoverySub: 'Elige una nueva contraseña para tu cuenta Biel AAC.',
+      newPassword: 'Nueva contraseña',
+      confirmPassword: 'Confirmar nueva contraseña',
+      savePassword: 'Guardar nueva contraseña',
+      saving: 'Guardando...',
+      passwordTooShort: 'La contraseña debe tener al menos 6 caracteres.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
+      invalidLink: 'Este enlace no es válido o expiró. Solicita un nuevo email de restablecimiento.',
+      recoverySuccessTitle: '¡Contraseña restablecida!',
+      recoverySuccessMessage: 'Tu contraseña fue cambiada con éxito.',
+      genericError: 'No se pudo completar la acción. Inténtalo de nuevo.',
     },
     fr: {
-      signup: { title: 'Compte confirmé !', message: 'Votre compte Biel AAC a été confirmé avec succès.' },
-      recovery: { title: 'Mot de passe réinitialisé !', message: 'Vous pouvez maintenant vous connecter à Biel AAC avec votre nouveau mot de passe.' },
-      invite: { title: 'Invitation acceptée !', message: 'Votre compte Biel AAC est prêt à être utilisé.' },
-      email_change: { title: 'Email mis à jour !', message: 'Votre email Biel AAC a été mis à jour avec succès.' },
-      default: { title: "C'est fait !", message: "L'action a été effectuée avec succès." },
+      success: {
+        signup: { title: 'Compte confirmé !', message: 'Votre compte Biel AAC a été confirmé avec succès.' },
+        invite: { title: 'Invitation acceptée !', message: 'Votre compte Biel AAC est prêt à être utilisé.' },
+        email_change: { title: 'Email mis à jour !', message: 'Votre email Biel AAC a été mis à jour avec succès.' },
+        default: { title: "C'est fait !", message: "L'action a été effectuée avec succès." },
+      },
       hintDesktop: "Ouvrez maintenant l'application Biel AAC sur la tablette ou le téléphone où elle est installée et connectez-vous normalement.",
       openApp: "Ouvrir l'app",
+      recoveryTitle: 'Créez un nouveau mot de passe',
+      recoverySub: 'Choisissez un nouveau mot de passe pour votre compte Biel AAC.',
+      newPassword: 'Nouveau mot de passe',
+      confirmPassword: 'Confirmer le nouveau mot de passe',
+      savePassword: 'Enregistrer le nouveau mot de passe',
+      saving: 'Enregistrement...',
+      passwordTooShort: 'Le mot de passe doit contenir au moins 6 caractères.',
+      passwordMismatch: 'Les mots de passe ne correspondent pas.',
+      invalidLink: 'Ce lien est invalide ou a expiré. Veuillez demander un nouvel email de réinitialisation.',
+      recoverySuccessTitle: 'Mot de passe réinitialisé !',
+      recoverySuccessMessage: 'Votre mot de passe a été modifié avec succès.',
+      genericError: "Impossible de terminer l'action. Réessayez.",
     },
   };
 
@@ -149,41 +231,111 @@
     return 'en';
   }
 
-  // O Supabase anexa o tipo do fluxo (signup, recovery, invite, email_change...)
-  // no fragmento da URL, ex: #access_token=...&type=recovery
-  function detectFlowType() {
-    const hash = window.location.hash || '';
-    const params = new URLSearchParams(hash.replace(/^#/, ''));
-    return params.get('type') || 'default';
-  }
+  const SUPABASE_URL = 'https://bhlibvcmmarljcbbpzbc.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobGlidmNtbWFybGpjYmJwemJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MTA3MDQsImV4cCI6MjA5ODE4NjcwNH0.TJY1jR1QBzhb1_dbZafoZxEfkltSjIq4jchXFZqChYw';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const lang = detectLang();
-  const flowType = detectFlowType();
   const t = STRINGS[lang];
-  const copy = t[flowType] || t.default;
-
   document.documentElement.lang = lang;
-  document.getElementById('title').textContent = copy.title;
-  document.getElementById('message').textContent = copy.message;
-  document.getElementById('hint-desktop').textContent = t.hintDesktop;
 
-  // ─── TENTATIVA DE ABRIR O APP (funciona em celular/tablet com o app instalado) ───
-  // Repassamos os tokens de sessão pro app via deep link, para que ele já
-  // entre logado, sem pedir a senha de novo.
   const hash = window.location.hash || '';
-  const deepLink = 'bielaac://login-callback' + hash;
+  const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+  const flowType = hashParams.get('type') || 'default';
+  const accessToken = hashParams.get('access_token');
+  const refreshToken = hashParams.get('refresh_token');
 
-  const openBtn = document.getElementById('open-app-btn');
-  openBtn.href = deepLink;
-  openBtn.textContent = t.openApp;
-  openBtn.style.display = 'inline-block';
+  const body = document.getElementById('card-body');
 
-  // Em dispositivos móveis, tenta abrir automaticamente. Se o app não estiver
-  // instalado ou não for um dispositivo móvel, nada visível acontece — a
-  // pessoa só vê a mensagem de sucesso e pode clicar no botão manualmente.
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if (isMobile) {
-    window.location.href = deepLink;
+  function checkIconHtml() {
+    return '<div class="check-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  }
+
+  // ─── FLUXO: RESET DE SENHA (exige nova senha antes de mostrar sucesso) ───
+  function renderRecoveryForm() {
+    body.innerHTML =
+      '<h1>' + t.recoveryTitle + '</h1>' +
+      '<p style="margin-bottom:24px;">' + t.recoverySub + '</p>' +
+      '<div id="recovery-error"></div>' +
+      '<div class="form-row">' +
+        '<label class="form-label">' + t.newPassword + '</label>' +
+        '<input type="password" id="new-password" class="form-input" autocomplete="new-password" />' +
+      '</div>' +
+      '<div class="form-row">' +
+        '<label class="form-label">' + t.confirmPassword + '</label>' +
+        '<input type="password" id="confirm-password" class="form-input" autocomplete="new-password" />' +
+      '</div>' +
+      '<button id="save-btn" class="btn">' + t.savePassword + '</button>';
+
+    document.getElementById('save-btn').addEventListener('click', submitNewPassword);
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('recovery-error');
+    if (el) el.innerHTML = '<div class="error-msg">⚠️ ' + msg + '</div>';
+  }
+
+  async function submitNewPassword() {
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const btn = document.getElementById('save-btn');
+
+    if (newPassword.length < 6) { showError(t.passwordTooShort); return; }
+    if (newPassword !== confirmPassword) { showError(t.passwordMismatch); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> ' + t.saving;
+
+    try {
+      const { error: updateError } = await sb.auth.updateUser({ password: newPassword });
+      if (updateError) throw updateError;
+      renderSuccess(t.recoverySuccessTitle, t.recoverySuccessMessage);
+    } catch (err) {
+      showError(t.genericError);
+      btn.disabled = false;
+      btn.textContent = t.savePassword;
+    }
+  }
+
+  // ─── FLUXO: CONFIRMAÇÃO SIMPLES (signup, invite, email_change...) ───
+  function renderSuccess(title, message) {
+    body.innerHTML =
+      checkIconHtml() +
+      '<h1>' + title + '</h1>' +
+      '<p>' + message + '</p>' +
+      '<p class="hint">' + t.hintDesktop + '</p>' +
+      '<a id="open-app-btn" class="btn" href="#">' + t.openApp + '</a>';
+
+    const deepLink = 'bielaac://login-callback' + hash;
+    document.getElementById('open-app-btn').href = deepLink;
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = deepLink;
+    }
+  }
+
+  function renderInvalidLink() {
+    body.innerHTML =
+      '<h1>' + t.recoveryTitle + '</h1>' +
+      '<div class="error-msg">⚠️ ' + t.invalidLink + '</div>';
+  }
+
+  // ─── ROTEAMENTO ─────────────────────────────────────────────
+  if (flowType === 'recovery') {
+    if (!accessToken || !refreshToken) {
+      renderInvalidLink();
+    } else {
+      sb.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+        .then(({ error }) => {
+          if (error) { renderInvalidLink(); return; }
+          renderRecoveryForm();
+        });
+    }
+  } else {
+    const copy = t.success[flowType] || t.success.default;
+    renderSuccess(copy.title, copy.message);
   }
 </script>
 </body>
