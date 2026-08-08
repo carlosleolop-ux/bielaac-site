@@ -171,6 +171,14 @@
   };
 
   function detectLang() {
+    // Prioridade 1: idioma explícito na URL (?lang=en), passado pelo app no
+    // momento do cadastro/reset — reflete o idioma que a pessoa realmente
+    // estava usando, não o idioma configurado no navegador/SO.
+    const fromQuery = new URLSearchParams(window.location.search || '').get('lang');
+    if (fromQuery && STRINGS[fromQuery]) return fromQuery;
+
+    // Prioridade 2 (fallback): idioma do navegador, para links antigos ou
+    // fluxos que ainda não passam ?lang= (convite, troca de email).
     const nav = (navigator.language || 'pt').toLowerCase();
     if (nav.startsWith('pt')) return 'pt';
     if (nav.startsWith('es')) return 'es';
