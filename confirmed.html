@@ -264,14 +264,15 @@
 
   function renderSuccess(title, message) {
     resolved = true;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
     body.innerHTML =
       checkIconHtml() +
       '<h1>' + title + '</h1>' +
       '<p>' + message + '</p>' +
       '<p class="hint">' + t.hintDesktop + '</p>' +
-      '<a id="open-app-btn" class="btn" href="bielaac://login-callback">' + t.openApp + '</a>';
+      (isMobile ? '<a id="open-app-btn" class="btn" href="bielaac://login-callback">' + t.openApp + '</a>' : '');
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
       window.location.href = 'bielaac://login-callback';
     }
