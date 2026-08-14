@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biel AAC — Excluir Conta</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1A1A1A;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #2A2A2A;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .card-header {
+    background: #0A0A0A;
+    padding: 32px;
+    text-align: center;
+  }
+  .card-header img { max-width: 160px; width: 100%; height: auto; }
+  .card-body { padding: 36px 32px; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  h2 { font-size: 14px; font-weight: 700; margin: 24px 0 8px; color: #FFFFFF; }
+  p { color: rgba(255,255,255,0.65); font-size: 14px; line-height: 1.65; margin-bottom: 12px; }
+  ul { margin: 8px 0 12px 20px; color: rgba(255,255,255,0.65); font-size: 14px; line-height: 1.7; }
+  a.mail-link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 11px 22px;
+    background: #CC0000;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .lang-bar { display: flex; gap: 6px; justify-content: center; margin-top: 20px; }
+  .lang-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    padding: 5px 10px;
+  }
+  .lang-btn.active { border-color: #CC0000; background: rgba(204,0,0,0.3); color: #FFFFFF; }
+  .footer-note { margin-top: 28px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <img src="/logo_branca.png" alt="Biel AAC" />
+      <div class="lang-bar" id="lang-bar"></div>
+    </div>
+    <div class="card-body" id="card-body"></div>
+  </div>
+
+<script>
+  const STRINGS = {
+    pt: {
+      title: 'Excluir minha conta e dados',
+      inAppTitle: 'Pelo aplicativo (mais rápido)',
+      inAppBody: 'Abra o Biel AAC, vá em Configurações → Conta → Excluir minha conta. A exclusão é imediata e apaga todos os seus dados permanentemente.',
+      emailTitle: 'Por email',
+      emailBody: 'Prefere pedir por email? Mande uma mensagem para privacy@bielaac.com a partir do endereço cadastrado na sua conta, com o assunto "Solicitação de exclusão de conta". Processamos o pedido em até 30 dias.',
+      whatTitle: 'O que é excluído',
+      whatItems: ['Todas as seções, cards e fotos cadastrados', 'Seu email e dados de login', 'Configurações e preferências salvas'],
+      btnText: 'Enviar email de solicitação',
+      footer: 'Biel AAC — Comunicação Aumentativa e Alternativa · LawPiss Digital',
+    },
+    en: {
+      title: 'Delete my account and data',
+      inAppTitle: 'From the app (fastest)',
+      inAppBody: 'Open Biel AAC, go to Settings → Account → Delete my account. Deletion is immediate and permanently erases all your data.',
+      emailTitle: 'By email',
+      emailBody: 'Prefer to request by email? Send a message to privacy@bielaac.com from the address registered on your account, with the subject "Account deletion request". We process requests within 30 days.',
+      whatTitle: 'What gets deleted',
+      whatItems: ['All sections, cards and photos you created', 'Your email and login data', 'Saved settings and preferences'],
+      btnText: 'Send request email',
+      footer: 'Biel AAC — Augmentative and Alternative Communication · LawPiss Digital',
+    },
+    es: {
+      title: 'Eliminar mi cuenta y datos',
+      inAppTitle: 'Desde la app (más rápido)',
+      inAppBody: 'Abre Biel AAC, ve a Configuración → Cuenta → Eliminar mi cuenta. La eliminación es inmediata y borra todos tus datos permanentemente.',
+      emailTitle: 'Por email',
+      emailBody: '¿Prefieres solicitarlo por email? Envía un mensaje a privacy@bielaac.com desde la dirección registrada en tu cuenta, con el asunto "Solicitud de eliminación de cuenta". Procesamos la solicitud en un plazo de 30 días.',
+      whatTitle: 'Qué se elimina',
+      whatItems: ['Todas las secciones, tarjetas y fotos creadas', 'Tu email y datos de acceso', 'Configuraciones y preferencias guardadas'],
+      btnText: 'Enviar email de solicitud',
+      footer: 'Biel AAC — Comunicación Aumentativa y Alternativa · LawPiss Digital',
+    },
+    fr: {
+      title: 'Supprimer mon compte et mes données',
+      inAppTitle: "Depuis l'application (plus rapide)",
+      inAppBody: "Ouvrez Biel AAC, allez dans Paramètres → Compte → Supprimer mon compte. La suppression est immédiate et efface définitivement toutes vos données.",
+      emailTitle: 'Par email',
+      emailBody: 'Vous préférez faire la demande par email ? Envoyez un message à privacy@bielaac.com depuis l\'adresse enregistrée sur votre compte, avec l\'objet "Demande de suppression de compte". Nous traitons la demande sous 30 jours.',
+      whatTitle: 'Ce qui est supprimé',
+      whatItems: ['Toutes les sections, cartes et photos créées', 'Votre email et vos données de connexion', 'Paramètres et préférences enregistrés'],
+      btnText: "Envoyer l'email de demande",
+      footer: 'Biel AAC — Communication Améliorée et Alternative · LawPiss Digital',
+    },
+  };
+
+  function detectLang() {
+    const fromQuery = new URLSearchParams(window.location.search || '').get('lang');
+    if (fromQuery && STRINGS[fromQuery]) return fromQuery;
+    const nav = (navigator.language || 'pt').toLowerCase();
+    if (nav.startsWith('pt')) return 'pt';
+    if (nav.startsWith('es')) return 'es';
+    if (nav.startsWith('fr')) return 'fr';
+    return 'en';
+  }
+
+  let currentLang = detectLang();
+
+  function render() {
+    const t = STRINGS[currentLang];
+    document.documentElement.lang = currentLang;
+    document.getElementById('card-body').innerHTML =
+      '<h1>' + t.title + '</h1>' +
+      '<h2>' + t.inAppTitle + '</h2>' +
+      '<p>' + t.inAppBody + '</p>' +
+      '<h2>' + t.emailTitle + '</h2>' +
+      '<p>' + t.emailBody + '</p>' +
+      '<a class="mail-link" href="mailto:privacy@bielaac.com?subject=' + encodeURIComponent(currentLang === 'pt' ? 'Solicitação de exclusão de conta' : currentLang === 'es' ? 'Solicitud de eliminación de cuenta' : currentLang === 'fr' ? 'Demande de suppression de compte' : 'Account deletion request') + '">' + t.btnText + '</a>' +
+      '<h2>' + t.whatTitle + '</h2>' +
+      '<ul>' + t.whatItems.map(i => '<li>' + i + '</li>').join('') + '</ul>' +
+      '<div class="footer-note">' + t.footer + '</div>';
+
+    document.getElementById('lang-bar').innerHTML = ['pt', 'en', 'es', 'fr'].map(l =>
+      '<button class="lang-btn' + (l === currentLang ? ' active' : '') + '" data-lang="' + l + '">' + l.toUpperCase() + '</button>'
+    ).join('');
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => { currentLang = btn.getAttribute('data-lang'); render(); });
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
